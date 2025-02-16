@@ -6,7 +6,8 @@ import { IoNotifications } from "react-icons/io5";
 
 const AdminHeader = () => {
   const page = usePathname();
-  const header = page.charAt(1).toUpperCase() + page.slice(2)
+  const lastSegment = page.split('/').pop();
+  const header = lastSegment ? lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1) : '';
   return (
     <div className="py-3 w-full bg-white rounded-full flex justify-between px-10">
       <p className="my-auto text-2xl font-bold">{header === "Admin" ? "Dashboard" : header}</p>

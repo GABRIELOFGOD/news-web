@@ -1,4 +1,4 @@
-import { formatDate } from "@/utils/dateFormatter";
+import { formatDate } from "@/services/dateFormatter";
 
 const AdminNewsCard = ({
   title,
