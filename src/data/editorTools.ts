@@ -43,6 +43,7 @@ const createTools = (uploadImageByFile: (file: File) => Promise<string>) => {
     },
     image: {
       class: Image,
+      inlineToolbar: true,
       config: {
         uploader: {
           uploadByUrl: uploadImageByUrl,

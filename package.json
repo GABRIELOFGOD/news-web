@@ -19,13 +19,17 @@
     "@editorjs/list": "^2.0.4",
     "@editorjs/marker": "^1.4.0",
     "@editorjs/quote": "^2.7.6",
+    "@types/react-spinkit": "^3.0.10",
     "cloudinary": "^2.5.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.4.2",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.4.0"
+    "react-icons": "^5.4.0",
+    "react-select": "^5.10.0",
+    "react-spinkit": "^3.0.0",
+    "sonner": "^1.7.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

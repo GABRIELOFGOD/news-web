@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { EditorContextProvider } from "@/context/EditorContext";
+import { Toaster } from "sonner";
+import { GlobalProvider } from "@/context/GlobalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,13 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <EditorContextProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
-      </EditorContextProvider>
+      <GlobalProvider>
+        <EditorContextProvider>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            {children}
+            <Toaster />
+          </body>
+        </EditorContextProvider>
+      </GlobalProvider>
     </html>
   );
 }

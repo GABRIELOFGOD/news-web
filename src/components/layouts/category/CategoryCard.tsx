@@ -1,10 +1,11 @@
 import Button from "@/components/common/buttons/MiniButton"
+import { Category } from "@/models/categoryTypes"
 import { BiEdit } from "react-icons/bi"
 
-const  CategoryCard = ({ text }: {text: string}) => {
+const  CategoryCard = ({category}:{category: Category}) => {
   return (
-    <div className="flex justify-between bg-grey shadow-sm rounded-md py-2 px-4 w-full"> 
-      <p className="my-auto font-[500]">{text}</p>
+    <div className="flex justify-between bg-grey shadow-md rounded-md py-2 px-4 w-full border border-dark-grey border-opacity-20"> 
+      <p className="my-auto font-[500] capitalize">{category.name}</p>
       <div className="flex gap-5 my-auto">
         <button className="flex gap-2 my-auto">
           <BiEdit className="my-auto" />
