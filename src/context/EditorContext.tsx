@@ -21,14 +21,14 @@ const EditorContext = createContext<EditorContextType | null>(null);
 export interface BlogStructure {
   title: string;
   content: any[];
-  banner: string;
+  banner: File | null;
   tags: string[];
   desc: string;
   state: NewsStatus;
 }
 
 export const EditorContextProvider = ({ children }: { children: ReactNode }) => {
-  const [blog, setBlog] = useState<BlogStructure>({ title: "", content: [], banner: "", tags: [], desc: "", state: NewsStatus.DRAFT });
+  const [blog, setBlog] = useState<BlogStructure>({ title: "", content: [], banner: null, tags: [], desc: "", state: NewsStatus.DRAFT });
   const [textEditor, setTextEditor] = useState<EditorJS | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editorReady, setEditorReady] = useState<boolean>(false);

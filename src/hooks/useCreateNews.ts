@@ -17,22 +17,31 @@ export const useCreateNews = () => {
     message: null,
   });
 
-  const postNews = async ({ title, desc, content, tags, banner }: BlogStructure) => {
+  const postNews = async ({ title, desc, content, tags, banner, state: blogState }: BlogStructure) => {
     try {
       setState({ ...state, error: null, loading: true });
+      const formData = new FormData();
+      formData.append("topic", title);
+      formData.append("description", desc);
+      formData.append("content", JSON.stringify(content));
+      formData.append("tags", JSON.stringify(tags));
+      formData.append("banner", banner as Blob);
+      formData.append("state", blogState);
+      
       const request = await fetch(`${BASE_URL}/news`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ "topic": title, "description": desc, content, tags, banner }),
+        body: formData,
       });
 
       const response = await request.json();
       if (!request.ok) throw new Error(response.message);
 
       if (response.success !== true) throw new Error(response.message);
+      console.log("response message", response.message);
 
       setState({ ...state, message: response.message, loading: false });
 
@@ -41,5 +50,5 @@ export const useCreateNews = () => {
     }
   }
 
-  return { ...state, postNews };
+  return { ...state, postNews, setState };
 }

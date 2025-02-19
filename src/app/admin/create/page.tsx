@@ -6,13 +6,14 @@ import EditorJS from "@editorjs/editorjs";
 import { toast } from "sonner";
 import Select, { MultiValue } from "react-select";
 
-import { useEditorContext, BlogStructure } from "@/context/EditorContext";
+import { useEditorContext } from "@/context/EditorContext";
 import { useUploadImage } from "@/hooks/useUploadImage";
 import { useGetCategory } from "@/hooks/useGetCategory";
 import createTools from "@/data/editorTools";
 import { defaultBanner } from "@/utils/constants";
 import { NewsStatus } from "@/models/newsTypes";
 import { Category } from "@/models/categoryTypes";
+import { useCreateNews } from "@/hooks/useCreateNews";
 
 const Create = () => {
   const [bannerSrc, setBannerSrc] = useState<string>(defaultBanner);
@@ -21,6 +22,8 @@ const Create = () => {
   const { uploadImageByFile } = useUploadImage();
   const { blog, setBlog, setTextEditor, categories, editorReady, setEditorReady } = useEditorContext();
   const tools = createTools(uploadImageByFile);
+
+  const { postNews, error: postError, loading: postLoading, message: postMessage, setState } = useCreateNews();
 
   useEffect(() => {
     if (error) {
@@ -57,7 +60,7 @@ const Create = () => {
     reader.onload = () => {
       const imageUrl = reader.result as string;
       setBannerSrc(imageUrl);
-      setBlog({ ...blog, banner: imageUrl, state: NewsStatus.DRAFT });
+      setBlog({ ...blog, banner: file });
     };
 
     reader.readAsDataURL(file);
@@ -71,12 +74,13 @@ const Create = () => {
   };
 
   const handlePublish = async (draft = false) => {
-    if (!blog.banner || blog.banner === defaultBanner) return toast.error("Please upload a banner.");
+    if (!blog.banner || blog.banner === null) return toast.error("Please upload a banner.");
     if (!blog.title.trim()) return toast.error("Please enter a title.");
     if (blog.tags.length === 0) return toast.error("Please enter tags.");
 
     try {
-      const outputData = await editorRef.current?.save().then((output) => {
+      setState({ error: null, message: null, loading: true });
+      const outputData = await editorRef.current?.save().then(async (output) => {
         console.log("Output data:", output);
         return output;
       });
@@ -94,7 +98,8 @@ const Create = () => {
       });
 
       console.log("Blog data:", blog);
-
+      const response = await postNews(blog);
+      console.log("Response:", response);
       toast.success(draft ? "Draft saved!" : "Published successfully!");
     } catch (error) {
       console.error("Saving failed:", error);
