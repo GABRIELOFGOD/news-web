@@ -8,7 +8,7 @@ const AdminSubList = ({ title, button, content }: {
   return (
     <div className="bg-white rounded-lg shadow-md w-full h-full">
       <div className="w-full bg-black rounded-t-lg text-white py-3 flex justify-between px-4">
-        <p className="font-semibold text-2xl">{title}</p>
+        <p className="font-semibold text-2xl my-auto">{title}</p>
         {button}
       </div>
       <div className="p-4 h-[400px] overflow-y-auto">

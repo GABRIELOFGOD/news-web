@@ -14,6 +14,8 @@ import { defaultBanner } from "@/utils/constants";
 import { NewsStatus } from "@/models/newsTypes";
 import { Category } from "@/models/categoryTypes";
 import { useCreateNews } from "@/hooks/useCreateNews";
+import ButtonLoader from "@/components/layouts/category/widget/ButtonLoader";
+import { useRouter } from "next/navigation";
 
 const Create = () => {
   const [bannerSrc, setBannerSrc] = useState<string>(defaultBanner);
@@ -22,14 +24,18 @@ const Create = () => {
   const { uploadImageByFile } = useUploadImage();
   const { blog, setBlog, setTextEditor, categories, editorReady, setEditorReady } = useEditorContext();
   const tools = createTools(uploadImageByFile);
+  const router = useRouter();
 
-  const { postNews, error: postError, loading: postLoading, message: postMessage, setState } = useCreateNews();
+  const { postNews, error: postError, loading: postLoading, setState } = useCreateNews();
 
   useEffect(() => {
     if (error) {
       toast.error("Failed to load categories. Please refresh.");
     }
-  }, [error]);
+    if (postError) {
+      toast.error(postError);
+    }
+  }, [error, postError]);
 
   useEffect(() => {
     if (!editorReady && document.getElementById("editorjs")) {
@@ -81,7 +87,6 @@ const Create = () => {
     try {
       setState({ error: null, message: null, loading: true });
       const outputData = await editorRef.current?.save().then(async (output) => {
-        console.log("Output data:", output);
         return output;
       });
       if (!outputData || outputData.blocks.length === 0) {
@@ -97,10 +102,11 @@ const Create = () => {
         state: draft ? NewsStatus.DRAFT : NewsStatus.PUBLISHED,
       });
 
-      console.log("Blog data:", blog);
       const response = await postNews(blog);
-      console.log("Response:", response);
-      toast.success(draft ? "Draft saved!" : "Published successfully!");
+      if (response.success) {
+        toast.success(draft ? "Draft saved!" : "Published successfully!");
+        router.push("/admin/news");
+      }
     } catch (error) {
       console.error("Saving failed:", error);
       toast.error("Saving failed.");
@@ -159,11 +165,19 @@ const Create = () => {
       {/* Buttons */}
       <div className="w-full flex justify-between">
         <div className="flex gap-5 px-5">
-          <button className="bg-transparent border border-black text-black px-5 py-2 rounded-full" onClick={() => handlePublish(true)}>
-            Save Draft
+          <button
+            className="bg-transparent border border-black text-black px-5 py-2 rounded-full w-[120px] h-fit disabled:cursor-not-allowed disabled:text-dark-grey disabled:border-dark-grey"
+            onClick={() => handlePublish(true)}
+            disabled={postLoading || !editorReady || !blog.banner || !blog.title.trim() || blog.tags.length === 0}
+          >
+            {postLoading ? <ButtonLoader color="black" /> : "Save Draft"}
           </button>
-          <button className="bg-black text-white px-5 py-2 rounded-full" onClick={() => handlePublish(false)}>
-            Publish
+          <button
+            className="bg-black text-white px-5 py-2 rounded-full disabled:cursor-not-allowed w-[120px] h-fit disabled:opacity-50"
+            onClick={() => handlePublish(false)}
+            disabled={postLoading || !editorReady || !blog.banner || !blog.title.trim() || blog.tags.length === 0}
+          >
+            {postLoading ? <ButtonLoader color="white" /> : "Publish"}
           </button>
         </div>
       </div>

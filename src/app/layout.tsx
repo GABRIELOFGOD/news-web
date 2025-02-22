@@ -4,6 +4,8 @@ import "./globals.css";
 import { EditorContextProvider } from "@/context/EditorContext";
 import { Toaster } from "sonner";
 import { GlobalProvider } from "@/context/GlobalContext";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

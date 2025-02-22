@@ -31,7 +31,6 @@ export const useCreateNews = () => {
       const request = await fetch(`${BASE_URL}/news`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
         },
         body: formData,
@@ -41,9 +40,9 @@ export const useCreateNews = () => {
       if (!request.ok) throw new Error(response.message);
 
       if (response.success !== true) throw new Error(response.message);
-      console.log("response message", response.message);
-
+      
       setState({ ...state, message: response.message, loading: false });
+      return response;
 
     } catch (error) {
       setState({ ...state, error: (error as Error).message });
